@@ -76,6 +76,11 @@ type Context struct {
 }
 
 func (c Context) Call(service, method string, in, out appengine_internal.ProtoMessage, opts *appengine_internal.CallOptions) error {
+	// If using the default aetest.Context, just run appengine.Context.Call()
+	if c.Context.FullyQualifiedAppID() == "dev~testapp" {
+		return c.Context.Call(service, method, in, out, opts)
+	}
+
 	c.Stats.wg.Add(1)
 	defer c.Stats.wg.Done()
 
